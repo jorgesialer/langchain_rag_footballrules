@@ -1,10 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
-from pydantic import BaseModel  # Para definir la estructura de la pregunta/respuesta
+from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
-
-# Importa todas las librerías de LangChain que ya usas
 from langchain_chroma import Chroma 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -13,9 +11,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 # -----------------------------------------------------------------
 # 1. OPTIMIZACIÓN: Cargar los modelos UNA SOLA VEZ
 # -----------------------------------------------------------------
-# Tu script 'query_data.py' cargaba los modelos CADA VEZ que lo corrías.
-# En una API, los modelos se cargan una sola vez cuando el servidor inicia.
-# Esto hace que las respuestas sean casi instantáneas.
 
 print("Cargando variables de entorno...")
 load_dotenv()
@@ -39,7 +34,7 @@ db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function
 
 print("Cargando modelo de Chat (Google Gemini)...")
 model = ChatGoogleGenerativeAI(
-    model="models/gemini-flash-latest",  # Usamos el modelo que te funcionó
+    model="models/gemini-flash-latest", 
     google_api_key=os.environ['GOOGLE_API_KEY'],
     temperature=0.7
 )
@@ -68,7 +63,6 @@ class QueryResponse(BaseModel):
 # -----------------------------------------------------------------
 # 4. CREAR EL "ENDPOINT" (LA URL DE LA API)
 # -----------------------------------------------------------------
-# Aquí es donde "pegamos" la lógica de tu query_data.py
 
 @app.post("/preguntar", response_model=QueryResponse)
 def preguntar(query: QueryRequest):
@@ -94,8 +88,6 @@ def preguntar(query: QueryRequest):
     # 3. Generar la respuesta (Igual que en query_data.py)
     response = model.invoke(prompt)
     
-    # ----- ¡ESTE ES EL CAMBIO IMPORTANTE! -----
-    # Revisa si la respuesta es una lista (el formato feo)
     if isinstance(response.content, list):
         # Saca el texto del primer elemento de la lista
         response_text = response.content[0].get('text', 'Error: No se pudo extraer texto')
@@ -113,8 +105,9 @@ def preguntar(query: QueryRequest):
     )
 
 # -----------------------------------------------------------------
-# 5. CÓMO CORRER EL SERVIDOR (si ejecutas 'python main.py')
+# 5. CÓMO CORRER EL SERVIDOR 
 # -----------------------------------------------------------------
+
 if __name__ == "__main__":
     # Inicia el servidor en el puerto 8000
     uvicorn.run(app, host="0.0.0.0", port=8000)
