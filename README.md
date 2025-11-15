@@ -54,13 +54,13 @@ El sistema funciona en dos fases: indexación y consulta.
 
 ```bash
 python create_db.py
-
+```
 Esto leerá el PDF en /data y creará la base de datos en la carpeta /chroma.
 
 2. Correr la API
-Bash
-
+```bash
 python main.py
+```
 El servidor se iniciará en http://127.0.0.1:8000.
 
 3. Probar la API
@@ -72,6 +72,9 @@ Haz clic en el endpoint /preguntar y en "Try it out".
 
 Escribe tu pregunta en el "Request body":
 
+```JSON
 {
   "texto": "What is an offside offence?"
 }
+```
+Presiona "Execute" y verás la respuesta en JSON.
