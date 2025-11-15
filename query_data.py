@@ -34,12 +34,9 @@ def main():
     )
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
-    # Search the DB.
     print("Buscando en la base de datos...")
     results = db.similarity_search_with_relevance_scores(query_text, k=3)
 
-    # CAMBIO CLAVE: Invertimos '<' por '>'.
-    # Descartamos resultados si el puntaje (distancia) es MAYOR a 0.7
     if len(results) == 0 or results[0][1] > 0.7: 
         print(f"No se encontraron resultados relevantes para: '{query_text}'")
         return
@@ -51,22 +48,18 @@ def main():
     print(prompt)
     print("----------------------------------\n")
 
-    # LÍNEA NUEVA (CORRECTA)
     model = ChatGoogleGenerativeAI(
-    model="models/gemini-flash-latest",  # <-- ¡USA ESTE NOMBRE DE TU LISTA! 
+    model="models/gemini-flash-latest", 
     google_api_key=os.environ['GOOGLE_API_KEY'],
     temperature=0.7 
     )
 
-    # LÍNEAS NUEVAS (¡LA SOLUCIÓN!)
     response = model.invoke(prompt)
 
-    # Revisa si la respuesta es una lista (el formato feo)
     if isinstance(response.content, list):
-        # Saca el texto del primer elemento de la lista
         response_text = response.content[0].get('text', '')
     else:
-        # Si no, usa el contenido directamente (es un string)
+
         response_text = response.content
 
 
