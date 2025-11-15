@@ -1,0 +1,12 @@
+# Archivos secretos
+.env
+
+# Entorno virtual
+.venv/
+
+# Base de datos vectorial
+chroma/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
