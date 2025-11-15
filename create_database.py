@@ -41,9 +41,7 @@ def load_documents():
 def split_text(documents: list[Document]):
     print("Dividiendo documentos en chunks...")
     text_splitter = RecursiveCharacterTextSplitter(
-        # CAMBIO 3: Aumentamos el tamaño a 1000 para mejor contexto
         chunk_size=1000,
-        # CAMBIO 4: Ajustamos el 'overlap' (sobreposición)
         chunk_overlap=200,
         length_function=len,
         add_start_index=True,
@@ -66,9 +64,6 @@ def split_text(documents: list[Document]):
 def save_to_chroma(chunks: list[Document]):
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
-
-    # CAMBIO: Usa HuggingFaceEmbeddings en lugar de OpenAIEmbeddings
-    # Esto usará tu CPU. La primera vez descargará el modelo (30-100MB).
     print("Inicializando modelo de embeddings local (HuggingFace)...")
     embedding_function = HuggingFaceEmbeddings(
         model_name="all-MiniLM-L6-v2"
@@ -76,7 +71,7 @@ def save_to_chroma(chunks: list[Document]):
     
     print(f"Creando base de datos Chroma con {len(chunks)} chunks (usando modelo local)...")
     db = Chroma.from_documents(
-        chunks, embedding_function, persist_directory=CHROMA_PATH # <-- Cambio aquí
+        chunks, embedding_function, persist_directory=CHROMA_PATH 
     )
     db.persist()
     print(f"Se guardaron {len(chunks)} chunks en {CHROMA_PATH}.")
