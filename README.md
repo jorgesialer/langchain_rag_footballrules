@@ -57,13 +57,13 @@ python create_db.py
 ```
 Esto leerá el PDF en /data y creará la base de datos en la carpeta /chroma.
 
-2. Correr la API
+### 2. Correr la API
 ```bash
 python main.py
 ```
 El servidor se iniciará en http://127.0.0.1:8000.
 
-3. Probar la API
+### 3. Probar la API
 Se puede usar la documentación interactiva de FastAPI.
 
 Abre tu navegador y ve a: http://127.0.0.1:8000/docs
